@@ -17,6 +17,7 @@ const App = () => {
   const [expenses, setExpenses] = useState([]);
   const [newMemberName, setNewMemberName] = useState('');
   const [paymentConfirmations, setPaymentConfirmations] = useState([]);
+  const [activeTab, setActiveTab] = useState('add');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
@@ -107,12 +108,29 @@ const App = () => {
     );
   }
 
+  const Tab = ({ label, id }) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={`px-3 py-1 border-b-2 ${activeTab === id ? 'border-blue-600 font-semibold' : 'border-transparent text-gray-600'}`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <div className="p-4 space-y-6">
-      <h1 className="text-2xl font-bold">Chào {currentUser}</h1>
+      <h1 className="text-2xl font-bold mb-4">Chào {currentUser}</h1>
 
-      {/* Thêm bữa ăn */}
-      <div className="border p-4 rounded shadow">
+      <div className="flex gap-4 border-b pb-2">
+        <Tab id="add" label="Thêm bữa ăn" />
+        <Tab id="history" label="Lịch sử" />
+        <Tab id="debt" label="Công nợ" />
+        <Tab id="members" label="Thành viên" />
+        <Tab id="summary" label="Tổng kết" />
+      </div>
+
+      {activeTab === 'add' && (
+              <div className="border p-4 rounded shadow">
         <h2 className="text-lg font-bold mb-2">Thêm bữa ăn</h2>
         <input placeholder="Mô tả" className="border w-full px-2 py-1 mb-2" value={newExpense.description} onChange={e => setNewExpense({ ...newExpense, description: e.target.value })} />
         <input type="number" placeholder="Tổng tiền" className="border w-full px-2 py-1 mb-2" value={newExpense.amount} onChange={e => setNewExpense({ ...newExpense, amount: Number(e.target.value) })} />
@@ -151,7 +169,9 @@ const App = () => {
         <button className="bg-green-500 text-white px-4 py-2 rounded mt-2" onClick={handleAddExpense}>Lưu bữa ăn</button>
       </div>
 
-      {/* Lịch sử bữa ăn */}
+      )}
+
+      {activeTab === 'history' && (
       <div className="border p-4 rounded shadow">
         <h2 className="text-lg font-bold mb-2">Lịch sử bữa ăn</h2>
         {expenses.length === 0 ? <p>Chưa có dữ liệu</p> : (
@@ -164,8 +184,9 @@ const App = () => {
           </ul>
         )}
       </div>
+      )}
 
-      {/* Dashboard nợ */}
+      {activeTab === 'debt' && (
       <div className="border p-4 rounded shadow">
         <h2 className="text-lg font-bold mb-2">Dashboard nợ</h2>
         {Object.entries(debts).map(([debtor, creditors], i) => (
@@ -189,8 +210,9 @@ const App = () => {
           })
         ))}
       </div>
+      )}
 
-      {/* Quản lý thành viên */}
+      {activeTab === 'members' && (
       <div className="border p-4 rounded shadow">
         <h2 className="text-lg font-bold mb-2">Quản lý thành viên</h2>
         <div className="flex gap-2 mb-4">
@@ -222,8 +244,9 @@ const App = () => {
           ))}
         </ul>
       </div>
+      )}
 
-      {/* Tổng kết công nợ */}
+      {activeTab === 'summary' && (
       <div className="border p-4 rounded shadow">
         <h2 className="text-lg font-bold mb-2">Tổng kết công nợ</h2>
         {Object.entries(summary).map(([user, s], idx) => (
@@ -238,6 +261,7 @@ const App = () => {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };
